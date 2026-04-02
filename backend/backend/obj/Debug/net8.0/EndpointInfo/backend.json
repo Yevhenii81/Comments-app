@@ -1,0 +1,147 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "backend",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/Captcha": {
+      "get": {
+        "tags": [
+          "Captcha"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Comments": {
+      "get": {
+        "tags": [
+          "Comments"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "createdAt"
+            }
+          },
+          {
+            "name": "sortDesc",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Comments"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "CaptchaAnswer",
+                  "CaptchaToken",
+                  "Email",
+                  "Text",
+                  "UserName"
+                ],
+                "type": "object",
+                "properties": {
+                  "UserName": {
+                    "maxLength": 50,
+                    "pattern": "^[a-zA-Z0-9]+$",
+                    "type": "string"
+                  },
+                  "Email": {
+                    "maxLength": 100,
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "HomePage": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "CaptchaToken": {
+                    "type": "string"
+                  },
+                  "CaptchaAnswer": {
+                    "type": "string"
+                  },
+                  "Text": {
+                    "maxLength": 5000,
+                    "type": "string"
+                  },
+                  "ParentId": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "UserName": {
+                  "style": "form"
+                },
+                "Email": {
+                  "style": "form"
+                },
+                "HomePage": {
+                  "style": "form"
+                },
+                "CaptchaToken": {
+                  "style": "form"
+                },
+                "CaptchaAnswer": {
+                  "style": "form"
+                },
+                "Text": {
+                  "style": "form"
+                },
+                "ParentId": {
+                  "style": "form"
+                },
+                "file": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": { }
+}
