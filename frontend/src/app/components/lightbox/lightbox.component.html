@@ -1,0 +1,4 @@
+<div class="lightbox-overlay" *ngIf="isOpen" (click)="close()">
+  <img [src]="imageUrl" class="lightbox-image" (click)="$event.stopPropagation()" alt="preview" />
+  <button class="lightbox-close" (click)="close()">✕</button>
+</div>

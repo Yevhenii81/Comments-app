@@ -1,0 +1,79 @@
+<div class="comment-form">
+  <h3>{{ parentId ? 'Ответить' : 'Оставить комментарий' }}</h3>
+
+  <div class="tag-toolbar">
+    <button type="button" (click)="wrapSelection('i')">[i]</button>
+    <button type="button" (click)="wrapSelection('strong')">[strong]</button>
+    <button type="button" (click)="wrapSelection('code')">[code]</button>
+    <button type="button" (click)="insertLink()">[a]</button>
+    <button type="button" (click)="togglePreview()" class="preview-btn">
+      {{ previewMode ? 'Редактировать' : 'Предпросмотр' }}
+    </button>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="form-row">
+      <div class="form-group">
+        <label>User Name *</label>
+        <input formControlName="userName" placeholder="Только латиница и цифры" />
+        <span class="error"
+          *ngIf="form.get('userName')?.touched && form.get('userName')?.invalid">
+          Только латинские буквы и цифры, обязательное поле.
+        </span>
+      </div>
+      <div class="form-group">
+        <label>E-mail *</label>
+        <input formControlName="email" type="email" />
+        <span class="error"
+          *ngIf="form.get('email')?.touched && form.get('email')?.invalid">
+          Введи корректный email.
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Home Page (необязательно)</label>
+      <input formControlName="homePage" placeholder="https://..." />
+      <span class="error"
+        *ngIf="form.get('homePage')?.touched && form.get('homePage')?.invalid">
+        Введи корректный URL.
+      </span>
+    </div>
+
+    <div class="form-group">
+      <label>CAPTCHA *</label>
+      <div class="captcha-row">
+        <img [src]="captchaImage" alt="captcha" class="captcha-img" />
+        <button type="button" (click)="loadCaptcha()" class="refresh-btn">↻</button>
+        <input formControlName="captchaAnswer" placeholder="Введи текст с картинки" />
+      </div>
+      <span class="error"
+        *ngIf="form.get('captchaAnswer')?.touched && form.get('captchaAnswer')?.invalid">
+        Введи CAPTCHA.
+      </span>
+    </div>
+
+    <div class="form-group">
+      <label>Текст *</label>
+      <div *ngIf="previewMode" class="preview-box" [innerHTML]="form.get('text')!.value"></div>
+      <textarea *ngIf="!previewMode" id="messageText" formControlName="text" rows="5"
+        placeholder="Твоё сообщение..."></textarea>
+      <span class="error"
+        *ngIf="form.get('text')?.touched && form.get('text')?.invalid">
+        Обязательное поле, максимум 5000 символов.
+      </span>
+    </div>
+
+    <div class="form-group">
+      <label>Прикрепить файл (JPG, GIF, PNG, TXT до 100КБ)</label>
+      <input type="file" (change)="onFileChange($event)" accept=".jpg,.jpeg,.gif,.png,.txt" />
+      <span class="error" *ngIf="fileError">{{ fileError }}</span>
+    </div>
+
+    <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+    <button type="submit" [disabled]="loading" class="submit-btn">
+      {{ loading ? 'Отправка...' : 'Отправить' }}
+    </button>
+  </form>
+</div>

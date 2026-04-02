@@ -1,0 +1,35 @@
+<div class="comment-item">
+  <div class="comment-body">
+    <div [innerHTML]="formatCommentText(comment.text)"></div>
+
+    <div *ngIf="comment.filePath" class="attachment">
+      <img *ngIf="comment.fileType === 'image'"
+        [src]="getFileUrl(comment.filePath!)"
+        class="thumb"
+        (click)="openLightbox(comment.filePath!)"
+        alt="Вложение" />
+      <a *ngIf="comment.fileType === 'text'"
+        [href]="comment.filePath"
+        target="_blank">📄 Текстовый файл</a>
+    </div>
+
+    <button class="reply-btn" (click)="toggleReplyForm()">
+      {{ showReplyForm ? 'Отмена' : 'Ответить' }}
+    </button>
+  </div>
+
+  <app-lightbox></app-lightbox>
+
+  <div *ngIf="showReplyForm" class="reply-form">
+    <app-comment-form [parentId]="comment.id" (commentAdded)="onReplyAdded()">
+    </app-comment-form>
+  </div>
+
+  <div *ngIf="comment.replies.length" class="replies">
+    <app-comment-item
+      *ngFor="let reply of comment.replies"
+      [comment]="reply"
+      (commentAdded)="commentAdded.emit()">
+    </app-comment-item>
+  </div>
+</div>

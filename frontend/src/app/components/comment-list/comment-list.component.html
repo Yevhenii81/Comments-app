@@ -1,0 +1,48 @@
+<div class="comment-list">
+  <app-comment-form (commentAdded)="loadComments()"></app-comment-form>
+
+  <div *ngIf="loading" class="loading">Загрузка...</div>
+
+  <table class="comments-table" *ngIf="!loading && comments.length">
+    <thead>
+      <tr>
+        <th (click)="sort('username')" class="sortable">
+          User Name {{ sortBy === 'username' ? (sortDesc ? '▼' : '▲') : '↕' }}
+        </th>
+        <th (click)="sort('email')" class="sortable">
+          E-mail {{ sortBy === 'email' ? (sortDesc ? '▼' : '▲') : '↕' }}
+        </th>
+        <th (click)="sort('createdAt')" class="sortable">
+          Дата {{ sortBy === 'createdAt' ? (sortDesc ? '▼' : '▲') : '↕' }}
+        </th>
+        <th>Сообщение</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let comment of comments">
+        <td>
+          <a *ngIf="comment.user.homePage" [href]="comment.user.homePage"
+            target="_blank" rel="noopener">{{ comment.user.userName }}</a>
+          <span *ngIf="!comment.user.homePage">{{ comment.user.userName }}</span>
+        </td>
+        <td>{{ comment.user.email }}</td>
+        <td>{{ comment.createdAt | date:'dd.MM.yy HH:mm' }}</td>
+        <td>
+          <app-comment-item [comment]="comment" (commentAdded)="loadComments()">
+          </app-comment-item>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!loading && !comments.length" class="empty">
+    Комментариев пока нет. Будь первым!
+  </div>
+
+  <div class="pagination" *ngIf="totalPages > 1">
+    <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">←</button>
+    <button *ngFor="let p of pages" (click)="goToPage(p)"
+      [class.active]="p === currentPage">{{ p }}</button>
+    <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">→</button>
+  </div>
+</div>
