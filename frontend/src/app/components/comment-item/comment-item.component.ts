@@ -7,7 +7,6 @@ import { LightboxComponent } from '../lightbox/lightbox.component';
   templateUrl: './comment-item.component.html',
   standalone: false
 })
-
 export class CommentItemComponent {
   @Input() comment!: Comment;
   @Output() commentAdded = new EventEmitter<void>();
@@ -16,10 +15,8 @@ export class CommentItemComponent {
   showReplyForm = false;
 
   formatCommentText(text: string): string {
-    if (!text) { return ''; }
-    if (/<\/?.+?>/.test(text)) {
-      return text;
-    }
+    if (!text) return '';
+    if (/<\/?.+?>/.test(text)) return text;
 
     const escaped = text
       .replace(/&/g, '&amp;')
@@ -32,6 +29,14 @@ export class CommentItemComponent {
       .replace(/`(.+?)`/g, '<code>$1</code>');
   }
 
+  getFileUrl(filePath: string): string {
+    if (!filePath) return '';
+    if (filePath.includes('/uploads/')) {
+      return '/uploads/' + filePath.split('/uploads/').pop();
+    }
+    return filePath;
+  }
+
   toggleReplyForm() {
     this.showReplyForm = !this.showReplyForm;
   }
@@ -41,25 +46,7 @@ export class CommentItemComponent {
     this.commentAdded.emit();
   }
 
-  getFileUrl(filePath: string): string {
-    if (!filePath) {
-      return '';
-    }
-
-    if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
-      return filePath;
-    }
-
-    if (filePath.startsWith('/')) {
-      return `https://localhost:7187${filePath}`;
-    }
-
-    return `https://localhost:7187/${filePath}`;
-  }
-
   openLightbox(url: string) {
-    const fullUrl = this.getFileUrl(url);
-    console.log('openLightbox', fullUrl);
-    this.lightbox.open(fullUrl);
+    this.lightbox.open(this.getFileUrl(url));
   }
 }

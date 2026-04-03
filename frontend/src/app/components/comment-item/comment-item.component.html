@@ -9,8 +9,8 @@
         (click)="openLightbox(comment.filePath!)"
         alt="Вложение" />
       <a *ngIf="comment.fileType === 'text'"
-        [href]="comment.filePath"
-        target="_blank">📄 Текстовый файл</a>
+        [href]="getFileUrl(comment.filePath!)"
+        target="_blank">Текстовый файл</a>
     </div>
 
     <button class="reply-btn" (click)="toggleReplyForm()">
