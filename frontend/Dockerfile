@@ -16,10 +16,3 @@ RUN echo 'server { \
     location /uploads/ { proxy_pass http://backend:8080/uploads/; } \
 }' > /etc/nginx/conf.d/default.conf
 EXPOSE 80
-```
-
-Сохрани, закрой Visual Studio, потом в терминале:
-```
-git add --all -- ":!.vs"
-git commit -m "fix nginx config"
-git push
