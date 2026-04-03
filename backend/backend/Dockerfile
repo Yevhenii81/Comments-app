@@ -1,15 +1,11 @@
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+FROM node:20-alpine AS build
 WORKDIR /app
-COPY *.csproj .
-RUN dotnet restore
+COPY package*.json ./
+RUN npm install
 COPY . .
-RUN dotnet publish -c Release -o /out
+RUN npm run build -- --configuration production
 
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
-WORKDIR /app
-RUN apt-get update && apt-get install -y fontconfig fonts-liberation && fc-cache -fv
-COPY --from=build /out .
-RUN mkdir -p /app/wwwroot/uploads
-EXPOSE 8080
-ENV ASPNETCORE_URLS=http://+:8080
-ENTRYPOINT ["dotnet", "backend.dll"]
+FROM nginx:alpine
+COPY --from=build /app/dist/frontend/browser /usr/share/nginx/html
+RUN echo 'server { listen 80; root /usr/share/nginx/html; index index.html; location / { try_files $uri $uri/ /index.html; } location /api/ { proxy_pass http://comments-app.railway.internal:8080/api/; } location /uploads/ { proxy_pass http://comments-app.railway.internal:8080/uploads/; } }' > /etc/nginx/conf.d/default.conf
+EXPOSE 80
